@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "java",
+    "MAIN_CLASS":"com.redisgeek.function.acre.export.Application",
+    "acre_id": "/subscriptions/.../resourceGroups/.../providers/Microsoft.Cache/redisEnterprise/...",
+    "rg_name": "...",
+    "blobSas": "?sv=...",
+    "storageKey": "...",
+    "storageName": "...",
+    "storageContainerName": "..."
+  }
+}
