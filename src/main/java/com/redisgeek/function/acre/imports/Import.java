@@ -33,6 +33,7 @@ public class Import implements Function<String, String> {
     static String sourceContainerName = "redisgeek-target";
 
     public String apply(String trigger) {
+
         try {
             TokenCredential credential = new EnvironmentCredentialBuilder()
                     .authorityHost(AzureAuthorityHosts.AZURE_PUBLIC_CLOUD)
