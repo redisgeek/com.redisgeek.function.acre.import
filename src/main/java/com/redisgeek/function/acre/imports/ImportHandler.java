@@ -4,12 +4,9 @@ import com.microsoft.azure.functions.*;
 import com.microsoft.azure.functions.annotation.*;
 import org.springframework.cloud.function.adapter.azure.FunctionInvoker;
 
-/**
- * Azure Functions with HTTP Trigger.
- */
 public class ImportHandler extends FunctionInvoker<byte[], String> {
 
-    @FunctionName("CopyBlob")
+    @FunctionName("ImportRDB")
     public void run(
             @BlobTrigger(name = "file",
                     dataType = "binary",
