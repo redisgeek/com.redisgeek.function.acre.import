@@ -9,16 +9,14 @@ import com.azure.resourcemanager.AzureResourceManager;
 import com.azure.resourcemanager.redisenterprise.RedisEnterpriseManager;
 import com.azure.resourcemanager.redisenterprise.models.Cluster;
 import com.azure.resourcemanager.redisenterprise.models.Database;
-import com.azure.resourcemanager.redisenterprise.models.ExportClusterParameters;
+import com.azure.resourcemanager.redisenterprise.models.ImportClusterParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 @Component
-public class Import implements Function<Mono<Optional<String>>, Mono<String>> {
+public class Import implements Function<String, String> {
 
     @Value("${acre_id}")
     private String acre_id;
@@ -32,10 +30,9 @@ public class Import implements Function<Mono<Optional<String>>, Mono<String>> {
     @Value("${storageAccountName}")
     private String storageAccountName;
 
-    @Value("${sourceContainerName}")
-    private String sourceContainerName;
+    static String sourceContainerName = "redisgeek-target";
 
-    public Mono<String> apply(Mono<Optional<String>> request) {
+    public String apply(String trigger) {
         try {
             TokenCredential credential = new EnvironmentCredentialBuilder()
                     .authorityHost(AzureAuthorityHosts.AZURE_PUBLIC_CLOUD)
@@ -50,16 +47,19 @@ public class Import implements Function<Mono<Optional<String>>, Mono<String>> {
             Cluster cluster = redisEnterpriseManager.redisEnterprises().getById(acre_id);
             Database database = redisEnterpriseManager.databases().getById(acre_id + "/databases/default");
             String blobSasUri = String.format("https://%s.blob.core.windows.net/%s%s", storageAccountName, sourceContainerName, blobSas);
-            ExportClusterParameters exportClusterParameters =
-                    new ExportClusterParameters().withSasUri(blobSasUri + ";" + storageKey);
-            exportClusterParameters.validate();
+            ImportClusterParameters importClusterParameters =
+                    new ImportClusterParameters().withSasUri(blobSasUri + ";" + storageKey);
+            importClusterParameters.validate();
 
             redisEnterpriseManager
                     .databases()
-                    .export(resourceGroupName, cluster.name(), database.name(), exportClusterParameters);
-            return Mono.just("Export Complete");
+                    .importMethod(resourceGroupName,
+                            cluster.name(),
+                            database.name(),
+                            importClusterParameters);
+            return "Import Complete";
         } catch (Exception e) {
-            return Mono.just(e.getMessage());
+            return e.getMessage();
         }
     }
 }
