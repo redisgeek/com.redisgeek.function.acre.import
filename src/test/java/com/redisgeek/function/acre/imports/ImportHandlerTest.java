@@ -11,10 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImportHandlerTest {
 
-    public void test() {
-        Mono<String> result = new Import().apply(Mono.just(Optional.empty()));
-        assertThat(result.block()).isNotEmpty();
-    }
+//    public void test() {
+//        Mono<String> result = new Import().apply(Mono.just(Optional.empty()));
+//        assertThat(result.block()).isNotEmpty();
+//    }
 
     public void start() {
         FunctionInvoker<String, String> handler = new FunctionInvoker<>(Import.class);
